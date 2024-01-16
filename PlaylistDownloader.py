@@ -14,6 +14,10 @@ import stat
 import shutil
 from pytube.exceptions import AgeRestrictedError
 
+import customtkinter as ctk
+import PlaylistDownloader as pldr
+import threading
+
 # Khai báo biến ix toàn cục
 ix = 0  # Đặt biến ix ở đây
 
@@ -138,5 +142,58 @@ def download_youtube_playlist(url):
         download_youtube_video(link, playlist_name, video_title)
 
 
+#GUI from here-------------------------------------------------------------------------------------------------------------------
+
+# Khởi tạo biến đếm
+button_press_count = 0
+
+def on_submit():
+    global button_press_count
+    button_press_count += 1  # Tăng biến đếm
+    user_input = input_box.get()
+    print(f"User Input: {user_input}")  # Xử lý input ở đây
+    count_label.configure(text=f"Button pressed: {button_press_count} times")  # Cập nhật text của label
+
+def call_download_youtube_playlist():
+    submit_button.configure(state='disabled')
+    count_label.configure(text=f"Đang tải...")  # Cập nhật text của label
+    user_input = input_box.get()
+
+    # pldr.download_youtube_playlist(user_input)
+    download_thread = threading.Thread(target=pldr.download_youtube_playlist, args=(user_input,))
+    download_thread.start()
+
+    check_thread = threading.Thread(target=enable_button_when_done, args=(download_thread,))
+    check_thread.start()
+    # count_label.configure(text=f"Hoàn thành download")  # Cập nhật text của label
+
+def enable_button_when_done(download_thread):
+    download_thread.join()  # Đợi cho đến khi luồng tải xuống hoàn thành
+    submit_button.configure(state='normal')  # Kích hoạt lại nút bấm
+    count_label.configure(text=f"Hoàn thành download")  # Cập nhật text của label
+
+
+# Thiết lập cửa sổ
+WIDTH = 1200
+HEIGHT = 1000
+app = ctk.CTk()
+app.geometry(f"{WIDTH}x{HEIGHT}")
+app.title("Playlist Downloader")
+
+# Tạo hộp nhập liệu
+input_box = ctk.CTkEntry(app, placeholder_text="Type your youtube playlist link here", width=1100, height=75, font=("", 20))
+input_box.pack(pady=40)
+input_box.bind("<Return>", lambda event: call_download_youtube_playlist())
+
+# Tạo nút submit
+submit_button = ctk.CTkButton(app, text="Download Playlist", command=call_download_youtube_playlist, width=400, height=75, font=("", 20))
+submit_button.pack(pady=10)
+
+# Tạo label để hiển thị số lần nút được nhấn
+count_label = ctk.CTkLabel(app, text="Button pressed: 0 times", font=("", 15))
+count_label.pack(pady=10)
+
+# Vòng lặp chính của ứng dụng
+app.mainloop()
 
 
