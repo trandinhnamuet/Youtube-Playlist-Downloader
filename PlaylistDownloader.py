@@ -128,6 +128,9 @@ def download_youtube_playlist(url):
     #Tạo folder chứa video tên là tên playlist
     playlist_name = get_youtube_title(url)
     print("Playlist name : " + playlist_name)
+    text_area.insert(ctk.END, f"Playlist name : {playlist_name}\n")
+    app.update_idletasks()
+    
     if os.path.exists(playlist_name):
         # Nếu tệp tồn tại, cấp quyền và xóa nó
         # os.remove(playlist_name)
@@ -137,8 +140,12 @@ def download_youtube_playlist(url):
     ix = 0
     for link in videoLinks:
         ix += 1
+        count_label.configure(text=f"Đang tải..." + str(ix) + "/" + str(videos_count))  # Cập nhật text của label
         video_title = get_youtube_title(link)
+
         print(str(ix) + " : " + link + " : " + video_title)
+        text_area.insert(ctk.END, f"{str(ix)} : {link} : {video_title}\n")
+        app.update_idletasks()
         download_youtube_video(link, playlist_name, video_title)
 
 
@@ -190,8 +197,11 @@ submit_button = ctk.CTkButton(app, text="Download Playlist", command=call_downlo
 submit_button.pack(pady=10)
 
 # Tạo label để hiển thị số lần nút được nhấn
-count_label = ctk.CTkLabel(app, text="Button pressed: 0 times", font=("", 15))
+count_label = ctk.CTkLabel(app, text="", font=("", 15))
 count_label.pack(pady=10)
+
+text_area = ctk.CTkTextbox(app, height=650, width=1100)
+text_area.pack()
 
 # Vòng lặp chính của ứng dụng
 app.mainloop()

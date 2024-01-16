@@ -1,0 +1,14 @@
+1. AgeRestrictedError: ZfpgKWTQqXw is age restricted, and can't be accessed without logging in
+- This bug due to this video require age verification to download. But pytube not support log in.
+- The solution is find the folder contain your PyTube. For example if you using venv, go to /venv/Lib/site-packages/pytube, open innertube.py then
+change line 223 from
+    def __init__(self, client='ANDROID_MUSIC', use_oauth=False, allow_cache=True): 
+to 
+    def __init__(self, client='ANDROID', use_oauth=False, allow_cache=True):
+
+2. customtkinter installed but when run, terminal still say can't find customtkinter
+( or the same bug with other lib)
+
+- Maybe you are installing >= 2 version of python.
+- The solution is uninstall 1 of them. Go to control panel -> programs and features -> uninstall python 3.7.1 (or the version u want to uninstall)
+- Problem solved, or you still need to delete your venv and python -m venv venv again and problem solved
