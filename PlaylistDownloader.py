@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 import time
 import math
-from pytube import YouTube
+from custom_youtube import YouTube
 import stat
 import shutil
 from pytube.exceptions import AgeRestrictedError
